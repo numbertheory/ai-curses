@@ -29,10 +29,9 @@ def dashport(stdscr):
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
             app.addstr(">", x=0, y=app.rows - 3)
-            
             if command == "quit" or command == "exit":
                 quit()
-        
+
         app.refresh()
 
 

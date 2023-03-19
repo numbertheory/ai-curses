@@ -22,16 +22,17 @@ def dashport(stdscr):
             app.user_prompt_position = 1
             command = new_prompt.user_prompt(app, x=2, y=app.rows - 3,
                                              height=2, width=app.cols)
-            response = f"AI> {ai_response(command)}"
-            app.panels["layout"][0].scroll(1)
+            response = f"{ai_response(command)}"
             app.print(content="Human> {}".format(app.current_command),
-                      x=0, y=app.rows - 4, panel="layout.0")
-            app.print(content="{}".format(response),
                       x=0, y=app.rows - 3, panel="layout.0")
-            app.panels["layout"][0].scroll(1)
+            app.print(content="AI> {}".format(response),
+                      color="green_on_default",
+                      x=0, y=app.rows - 2, panel="layout.0")
             app.addstr(">", x=0, y=app.rows - 3)
+            
             if command == "quit" or command == "exit":
                 quit()
+        
         app.refresh()
 
 

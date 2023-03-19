@@ -7,6 +7,7 @@ def user_prompt(app, **kwargs):
     command_line_entered = []
     cursor_x = kwargs.get("x", 0)
     cursor_y = kwargs.get("y", 0)
+    request_id = kwargs.get("request_id")
 
     def validate_text(x):
         invalid_chars = [127, 260, 261, 10]
@@ -54,4 +55,5 @@ def user_prompt(app, **kwargs):
     tb.edit(validate_text)
     curses.curs_set(False)
     app.panels["prompt"].clear()
-    return app.current_command
+    request_id += 1
+    return app.current_command, request_id

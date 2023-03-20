@@ -4,6 +4,7 @@ from dashport.run import wrap
 from ai_curses import new_prompt
 from ai_curses import openai
 import argparse
+import uuid
 from datetime import datetime
 
 parser = argparse.ArgumentParser(
@@ -21,6 +22,7 @@ parser.add_argument('-t', '--timeout',
 parser.add_argument('-o', '--output',
                     help="Set path for output text file to save chat.")
 args = parser.parse_args()
+output_path = "{}/{}.md".format(args.output, str(uuid.uuid4()))
 
 
 def quit():
@@ -41,7 +43,7 @@ def dashport(stdscr):
     request_count = 1
     messages = [{"role": "system", "content": args.super}]
     if args.output:
-        with open(args.output, 'w', encoding='utf-8') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
             f.write(f"# Chat Record {current_date}\n")
             f.write("#chatgpt\n")
@@ -69,7 +71,7 @@ def dashport(stdscr):
                         "content": response.strip()[0:200]
                     })
                     if args.output:
-                        with open(args.output, 'a', encoding='utf-8') as f:
+                        with open(output_path, 'a', encoding='utf-8') as f:
                             f.write("Human> {} \n\n".format(command))
                             f.write("AI> {} \n\n".format(response))
                             f.close()

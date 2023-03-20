@@ -27,6 +27,8 @@ def dashport(stdscr):
                 app, x=2, y=app.rows - 3,
                 height=2, width=app.cols,
                 request_id=request_id)
+            if command == "quit" or command == "exit":
+                quit()
             if request_id == request_count:
                 response = ai_response(command)
                 request_count += 1
@@ -36,9 +38,6 @@ def dashport(stdscr):
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
             app.addstr(">", x=0, y=app.rows - 3)
-            if command == "quit" or command == "exit":
-                quit()
-
         app.refresh()
 
 

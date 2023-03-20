@@ -4,6 +4,7 @@ from dashport.run import wrap
 from ai_curses import new_prompt
 from ai_curses import openai
 import argparse
+from datetime import datetime
 
 parser = argparse.ArgumentParser(
                     prog='AI-Curses',
@@ -17,6 +18,8 @@ parser.add_argument('-s', '--super',
 parser.add_argument('-t', '--timeout',
                     help="Set the API timeout, default is 95 seconds.",
                     default='95')
+parser.add_argument('-o', '--output',
+                    help="Set path for output text file to save chat.")
 args = parser.parse_args()
 
 
@@ -37,6 +40,12 @@ def dashport(stdscr):
     request_id = 0
     request_count = 1
     messages = [{"role": "system", "content": args.super}]
+    if args.output:
+        with open(args.output, 'w', encoding='utf-8') as f:
+            current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
+            f.write(f"# Chat Record {current_date}\n")
+            f.write("#chatgpt\n")
+            f.close()
     while True:
         while True:
             app.user_prompt_position = 1
@@ -59,6 +68,11 @@ def dashport(stdscr):
                         "role": "assistant",
                         "content": response.strip()[0:200]
                     })
+                    if args.output:
+                        with open(args.output, 'a', encoding='utf-8') as f:
+                            f.write("Human> {} \n\n".format(command))
+                            f.write("AI> {} \n\n".format(response))
+                            f.close()
                 else:
                     # drop the last message if the response was not good
                     messages.pop(len(messages) - 1)

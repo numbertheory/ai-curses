@@ -30,7 +30,16 @@ def dashport(stdscr):
             if command == "quit" or command == "exit":
                 quit()
             if request_id == request_count:
+                app.panels["prompt"].clear()
+                app.print(content="{}".format(command),
+                          color="grey_on_default",
+                          x=0, y=app.rows - 4, panel="layout.0")
+                app.screen.refresh()
                 response = ai_response(command)
+                app.print(content="{}".format(" " * len(command)),
+                          color="grey_on_default",
+                          x=0, y=app.rows - 5, panel="layout.0")
+                app.screen.refresh()
                 request_count += 1
             app.print(content="Human> {}".format(app.current_command),
                       x=0, y=app.rows - 3, panel="layout.0")

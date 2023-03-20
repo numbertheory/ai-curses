@@ -27,4 +27,29 @@ def chat(query):
     if openai_req.status_code == 200 or openai_req.status_code == 408:
         return openai_req.json()['choices'][0]['text'], openai_req.status_code
     else:
-        return f"Sorry, your request did not go through: {openai_req.text} "
+        return f"Sorry, your request did not go through: {openai_req.text} ",
+        500
+
+
+def get_chat_reply(messages):
+    headers = {
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {os.getenv('CHATGPT_TOKEN')}"
+    }
+    body = {
+        "model": "gpt-3.5-turbo",
+        "messages": messages
+    }
+    return api_wrap.post("https://api.openai.com/v1/chat/completions",
+                         headers=headers,
+                         body=body)
+
+
+def chatgpt(messages):
+    openai_req = get_chat_reply(messages)
+    error_msg = f"Sorry, your request did not go through: {openai_req.text} "
+    if openai_req.status_code == 200 or openai_req.status_code == 408:
+        return_val = openai_req.json()['choices'][0]['message']['content']
+        return return_val, openai_req.status_code
+    else:
+        return error_msg, 500

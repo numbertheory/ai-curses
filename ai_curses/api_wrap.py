@@ -17,7 +17,7 @@ def post(url, **kwargs):
     try:
         main_request = requests.post(
             url, headers=headers, json=body,
-            timeout=(3, 35))
+            timeout=(3, 65))
     except requests.exceptions.ReadTimeout:
         return FallBack()
     return main_request

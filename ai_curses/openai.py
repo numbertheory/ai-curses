@@ -31,7 +31,8 @@ def chat(query):
         500
 
 
-def get_chat_reply(messages):
+def get_chat_reply(messages, **kwargs):
+    timeout = int(kwargs.get("timeout", 95))
     headers = {
         "Content-type": "application/json",
         "Authorization": f"Bearer {os.getenv('CHATGPT_TOKEN')}"
@@ -42,11 +43,13 @@ def get_chat_reply(messages):
     }
     return api_wrap.post("https://api.openai.com/v1/chat/completions",
                          headers=headers,
-                         body=body)
+                         body=body,
+                         timeout=timeout)
 
 
-def chatgpt(messages):
-    openai_req = get_chat_reply(messages)
+def chatgpt(messages, **kwargs):
+    timeout = int(kwargs.get("timeout", 95))
+    openai_req = get_chat_reply(messages, timeout=timeout)
     error_msg = f"Sorry, your request did not go through: {openai_req.text} "
     if openai_req.status_code == 200 or openai_req.status_code == 408:
         return_val = openai_req.json()['choices'][0]['message']['content']

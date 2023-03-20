@@ -19,10 +19,11 @@ class FallBack():
 def post(url, **kwargs):
     headers = kwargs.get("headers", {"Content-type": "application/json"})
     body = kwargs.get("body", {})
+    timeout_seconds = kwargs.get("timeout", 95)
     try:
         main_request = requests.post(
             url, headers=headers, json=body,
-            timeout=(3, 65))
+            timeout=(3, timeout_seconds))
     except requests.exceptions.ReadTimeout:
         return FallBack("Something bad happened.")
     return main_request

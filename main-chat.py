@@ -14,6 +14,9 @@ parser.add_argument('-v', '--verbose',
 parser.add_argument('-s', '--super',
                     help="Set the system prompt for the chat intialization.",
                     default='You are a helpful assistant.')
+parser.add_argument('-t', '--timeout',
+                    help="Set the API timeout, default is 95 seconds.",
+                    default='95')
 args = parser.parse_args()
 
 
@@ -22,7 +25,8 @@ def quit():
 
 
 def ai_response(messages):
-    return openai.chatgpt(messages)
+    timeout = int(args.timeout)
+    return openai.chatgpt(messages, timeout=timeout)
 
 
 def dashport(stdscr):

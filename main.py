@@ -11,6 +11,9 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-v', '--verbose',
                     help="Show history after each question.",
                     action='store_true')
+parser.add_argument('-s', '--size',
+                    help="Show history size after each question.",
+                    action='store_true')
 args = parser.parse_args()
 
 
@@ -61,11 +64,19 @@ def dashport(stdscr):
                 request_count += 1
             app.print(content="Human> {}".format(app.current_command),
                       x=0, y=app.rows - 3, panel="layout.0")
-            app.print(content="AI> {}".format("\n".join(response)),
+            app.print(content="AI> {}".format("\n".join(response).lstrip()),
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
             if args.verbose:
                 app.print(content="History> {}".format(history),
+                          color="red_on_default",
+                          x=0, y=app.rows - 2, panel="layout.0")
+            if args.size:
+                history_size = " ".join(
+                    [f"{x.get('query')}\n{x.get('response')}\n"
+                     for x in history]
+                )
+                app.print(content="History> {}".format(len(history_size)),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")
             app.addstr(">", x=0, y=app.rows - 3)

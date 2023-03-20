@@ -3,14 +3,31 @@ from dashport.dash import Dashport
 from dashport.run import wrap
 from ai_curses import new_prompt
 from ai_curses import openai
+import argparse
+
+parser = argparse.ArgumentParser(
+                    prog='AI-Curses',
+                    description='Interact with AI platforms in a terminal.')
+parser.add_argument('-v', '--verbose',
+                    help="Show history after each question.",
+                    action='store_true')
+args = parser.parse_args()
 
 
 def quit():
     exit(0)
 
 
-def ai_response(prompt):
-    return openai.chat(prompt.strip())
+def ai_response(prompt, history):
+    full_history = " ".join([f"{x.get('query')}\n{x.get('response')}\n"
+                             for x in history])
+    msg, status_code = openai.chat(
+        f"{full_history}\n{prompt.strip()}"
+    )
+    if status_code == 200:
+        history.append({"query": f"{prompt.strip()}\n",
+                        "response": f"{msg}\n"})
+    return msg.splitlines(), history
 
 
 def dashport(stdscr):
@@ -20,6 +37,7 @@ def dashport(stdscr):
     app.commands = []
     request_id = 0
     request_count = 1
+    history = []
     while True:
         while True:
             app.user_prompt_position = 1
@@ -35,7 +53,7 @@ def dashport(stdscr):
                           color="grey_on_default",
                           x=0, y=app.rows - 4, panel="layout.0")
                 app.screen.refresh()
-                response = ai_response(command)
+                response, history = ai_response(command, history)
                 app.print(content="{}".format(" " * len(command)),
                           color="grey_on_default",
                           x=0, y=app.rows - 5, panel="layout.0")
@@ -43,9 +61,13 @@ def dashport(stdscr):
                 request_count += 1
             app.print(content="Human> {}".format(app.current_command),
                       x=0, y=app.rows - 3, panel="layout.0")
-            app.print(content="AI> {}".format(response),
+            app.print(content="AI> {}".format("\n".join(response)),
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
+            if args.verbose:
+                app.print(content="History> {}".format(history),
+                          color="red_on_default",
+                          x=0, y=app.rows - 2, panel="layout.0")
             app.addstr(">", x=0, y=app.rows - 3)
         app.refresh()
 

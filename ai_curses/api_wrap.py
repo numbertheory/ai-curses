@@ -5,7 +5,7 @@ import requests
 class FallBack():
     """ Fallback object for requests to surface API timeouts safely. """
     def __init__(self):
-        self.status_code = 200
+        self.status_code = 408
 
     def json(self):
         return {"choices": [{"text": "Sorry, your request timed out!"}]}
@@ -17,7 +17,7 @@ def post(url, **kwargs):
     try:
         main_request = requests.post(
             url, headers=headers, json=body,
-            timeout=(3, 60))
+            timeout=(3, 10))
     except requests.exceptions.ReadTimeout:
         return FallBack()
     return main_request

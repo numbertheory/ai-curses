@@ -24,7 +24,7 @@ def get_response(query):
 
 def chat(query):
     openai_req = get_response(query)
-    if openai_req.status_code == 200:
-        return openai_req.json()['choices'][0]['text']
+    if openai_req.status_code == 200 or openai_req.status_code == 408:
+        return openai_req.json()['choices'][0]['text'], openai_req.status_code
     else:
         return f"Sorry, your request did not go through: {openai_req.text} "

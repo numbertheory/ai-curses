@@ -51,7 +51,10 @@ def dashport(stdscr):
                 messages.append({"role": "user", "content": command})
                 response, status_code = ai_response(messages)
                 if status_code == 200:
-                    messages.append({"role": "assistant", "content": response})
+                    messages.append({
+                        "role": "assistant",
+                        "content": response.strip()[0:200]
+                    })
                 else:
                     # drop the last message if the response was not good
                     messages.pop(len(messages) - 1)

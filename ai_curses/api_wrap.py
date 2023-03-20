@@ -24,5 +24,5 @@ def post(url, **kwargs):
             url, headers=headers, json=body,
             timeout=(3, 65))
     except requests.exceptions.ReadTimeout:
-        return FallBack(main_request.text)
+        return FallBack("Something bad happened.")
     return main_request

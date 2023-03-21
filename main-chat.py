@@ -4,6 +4,7 @@ from dashport.run import wrap
 from ai_curses import new_prompt
 from ai_curses import openai
 import argparse
+from ConfigParser import ConfigParser
 import uuid
 from datetime import datetime
 
@@ -21,16 +22,30 @@ parser.add_argument('-t', '--timeout',
                     default='95')
 parser.add_argument('-o', '--output',
                     help="Set path for output text file to save chat.")
+parser.add_argument('-c', '--config',
+                    help="Set a path for a config file.",
+                    default=None)
 args = parser.parse_args()
 output_path = "{}/{}.md".format(args.output, str(uuid.uuid4()))
+if args.config:
+    config = ConfigParser()
+    config.read(args.config)
+    timeout = config.get('options', 'timeout')
+    super_command = config.get('options', 'super')
+    verbose = config.get('options', 'verbose')
+    output_file = config.get('options', 'output')
+else:
+    timeout = int(args.timeout)
+    super_command = args.super
+    verbose = args.verbose
+    output_file = args.output
 
 
 def quit():
     exit(0)
 
 
-def ai_response(messages):
-    timeout = int(args.timeout)
+def ai_response(messages, timeout):
     return openai.chatgpt(messages, timeout=timeout)
 
 
@@ -41,7 +56,7 @@ def dashport(stdscr):
     app.commands = []
     request_id = 0
     request_count = 1
-    messages = [{"role": "system", "content": args.super}]
+    messages = [{"role": "system", "content": super_command}]
     if args.output:
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
@@ -70,7 +85,7 @@ def dashport(stdscr):
                 while len(messages) > 25:
                     messages.pop(1)
 
-                response, status_code = ai_response(messages)
+                response, status_code = ai_response(messages, timeout)
                 if status_code == 200:
                     messages.append({
                         "role": "assistant",

@@ -161,3 +161,6 @@ cython_debug/
 
 # Output docs
 *.txt
+
+# Ignore .ini files
+*.ini

@@ -64,6 +64,12 @@ def dashport(stdscr):
                           x=0, y=app.rows - 4, panel="layout.0")
                 app.screen.refresh()
                 messages.append({"role": "user", "content": command})
+                # Limit the messages to 25 so it can run indefinitely.
+                # The first message is the system message, so we
+                # should keep index (0)
+                while len(messages) > 25:
+                    messages.pop(1)
+
                 response, status_code = ai_response(messages)
                 if status_code == 200:
                     messages.append({

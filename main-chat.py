@@ -26,7 +26,7 @@ parser.add_argument('-c', '--config',
                     help="Set a path for a config file.",
                     default=None)
 args = parser.parse_args()
-output_path = "{}/{}.md".format(args.output, str(uuid.uuid4()))
+
 if args.config:
     config = ConfigParser()
     config.read(args.config)
@@ -39,6 +39,8 @@ else:
     super_command = args.super
     verbose = args.verbose
     output_file = args.output
+
+output_path = "{}/{}.md".format(output_file, str(uuid.uuid4()))
 
 
 def quit():
@@ -57,7 +59,7 @@ def dashport(stdscr):
     request_id = 0
     request_count = 1
     messages = [{"role": "system", "content": super_command}]
-    if args.output:
+    if output_file:
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
             f.write(f"# Chat Record {current_date}\n")
@@ -91,7 +93,7 @@ def dashport(stdscr):
                         "role": "assistant",
                         "content": response.strip()[0:200]
                     })
-                    if args.output:
+                    if output_file:
                         with open(output_path, 'a', encoding='utf-8') as f:
                             f.write("Human> {} \n\n".format(command))
                             f.write("AI> {} \n\n".format(response))
@@ -109,7 +111,7 @@ def dashport(stdscr):
             app.print(content="AI> {}".format(response),
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
-            if args.verbose:
+            if verbose:
                 app.print(content="History> {}".format(messages),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")

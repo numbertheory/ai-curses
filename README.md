@@ -42,5 +42,5 @@ output = '/home/user/somedir'
 
 **timeout**: The time, in seconds, the program will wait for a response from the API. Default: 95 seconds.
 **super**: The system prompt that is always the first message in the list of messages sent to the API. Use this to set up a more precise use case, that will be an assumption that the AI will use for all your other messages. Default: "You are a helpful assistant."
-**verbose**: Set this to see the exact Python list that is getting sent with each message. Useful for debugging, does not show up in output text file (see option below).
-**output**: Set a directory on your local system to save the output. It does get stored as a UUID for the moment.
+**verbose**: Set this to see the exact Python list that is getting sent with each message. Useful for debugging, does not show up in output text file (see option below). Default: false
+**output**: Set a directory on your local system to save the output. It does get stored as a UUID for the moment. Default: Not set, no output file is generated.

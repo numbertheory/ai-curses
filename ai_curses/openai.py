@@ -52,7 +52,8 @@ def chatgpt(messages, **kwargs):
     openai_req = get_chat_reply(messages, timeout=timeout)
     error_msg = f"Sorry, your request did not go through: {openai_req.text} "
     if openai_req.status_code == 200 or openai_req.status_code == 408:
-        return_val = openai_req.json()['choices'][0]['message']['content']
+        return_val = "\n".join([x['message']['content']
+                                for x in openai_req.json()['choices']])
         return return_val, openai_req.status_code
     else:
         return error_msg, 500

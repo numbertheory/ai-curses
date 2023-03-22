@@ -5,7 +5,6 @@ from ai_curses import new_prompt
 from ai_curses import openai
 import argparse
 from ConfigParser import ConfigParser
-import uuid
 from datetime import datetime
 
 parser = argparse.ArgumentParser(
@@ -40,7 +39,8 @@ else:
     verbose = args.verbose
     output_file = args.output
 
-output_path = "{}/{}.md".format(output_file, str(uuid.uuid4()))
+filename_for_md = datetime.now().strftime("%Y-%m-%d at %I_%M_%p")
+output_path = "{}/{}.md".format(output_file, filename_for_md)
 
 
 def quit():
@@ -63,6 +63,7 @@ def dashport(stdscr):
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
             f.write(f"# Chat Record {current_date}\n")
+            f.write(f"System Prompt: {super_command}")
             f.write("#chatgpt\n")
             f.close()
     while True:

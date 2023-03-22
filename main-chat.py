@@ -62,9 +62,10 @@ def dashport(stdscr):
     if output_file:
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
-            f.write(f"# Chat Record {current_date}\n")
-            f.write(f"System Prompt: {super_command}")
-            f.write("#chatgpt\n")
+            f.write(f"# Chat Record {current_date}\n\n")
+            replace_with_backticks = super_command.replace("\"\"\"", "```")
+            f.write(f"System Prompt: {replace_with_backticks}\n\n")
+            f.write("#chatgpt\n\n")
             f.close()
     while True:
         while True:

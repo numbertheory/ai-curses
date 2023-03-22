@@ -28,14 +28,14 @@ python main-chat.py -h
 
 The `-c` or `--config` flag points to an INI config file so that you can set options without having large amounts of flags or text in your command.  This flag is only available for `main-chat.py` at the moment.
 
-This is a sample INI file. The `output` option should be a full absolute path to a directory, the actual file name is stored as a UUID for the moment.
+This is a sample INI file. The `output` option should be a full absolute path to a directory, the actual filename will be generated based on the system time and date.
 
 ```
 [options]
 timeout = 60
 super = "You are an AI chat having a conversation with a human."
 verbose = false
-output = '/home/user/somedir' 
+output = /home/user/somedir
 ```
 
 ### Options
@@ -43,4 +43,4 @@ output = '/home/user/somedir'
 **timeout**: The time, in seconds, the program will wait for a response from the API. Default: 95 seconds.
 **super**: The system prompt that is always the first message in the list of messages sent to the API. Use this to set up a more precise use case, that will be an assumption that the AI will use for all your other messages. Default: "You are a helpful assistant."
 **verbose**: Set this to see the exact Python list that is getting sent with each message. Useful for debugging, does not show up in output text file (see option below). Default: false
-**output**: Set a directory on your local system to save the output. It does get stored as a UUID for the moment. Default: Not set, no output file is generated.
+**output**: Set a directory on your local system to save the output. Default: Not set, no output file is generated.

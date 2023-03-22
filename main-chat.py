@@ -6,6 +6,7 @@ from ai_curses import openai
 import argparse
 from configparser import ConfigParser
 from datetime import datetime
+import json
 
 parser = argparse.ArgumentParser(
                     prog='AI-Curses',
@@ -20,9 +21,13 @@ parser.add_argument('-t', '--timeout',
                     help="Set the API timeout, default is 95 seconds.",
                     default='95')
 parser.add_argument('-o', '--output',
-                    help="Set path for output text file to save chat.")
+                    help="Set path for output text file and JSON quicksave"
+                         "file to save chat and place on exit.")
 parser.add_argument('-c', '--config',
                     help="Set a path for a config file.",
+                    default=None)
+parser.add_argument('-l', '--load-quicksave',
+                    help="Load a quicksave JSON file.",
                     default=None)
 args = parser.parse_args()
 
@@ -39,8 +44,13 @@ else:
     verbose = args.verbose
     output_file = args.output
 
+if args.load_quicksave:
+    quicksave_file = args.load_quicksave
+else:
+    quicksave_file = None
 filename_for_md = datetime.now().strftime("%Y-%m-%d at %I_%M_%S_%f_%p")
 output_path = "{}/{}.md".format(output_file, filename_for_md)
+json_path = "{}/{}.json".format(output_file, filename_for_md)
 
 
 def quit():
@@ -51,6 +61,16 @@ def ai_response(messages, timeout):
     return openai.chatgpt(messages, timeout=timeout)
 
 
+def load_quicksave(quicksave_file, super_command):
+    if not quicksave_file:
+        return [{"role": "system", "content": super_command}]
+    else:
+        with open(quicksave_file, 'r') as f:
+            messages = json.load(f)
+
+        return messages
+
+
 def dashport(stdscr):
     app = Dashport(stdscr, color_default=8)
     app.layout("single_panel", border=False, scroll=True, height=app.rows - 4)
@@ -58,7 +78,7 @@ def dashport(stdscr):
     app.commands = []
     request_id = 0
     request_count = 1
-    messages = [{"role": "system", "content": super_command}]
+    messages = load_quicksave(quicksave_file, super_command)
     if output_file:
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
@@ -76,6 +96,9 @@ def dashport(stdscr):
                 height=2, width=app.cols,
                 request_id=request_id)
             if command == "quit" or command == "exit":
+                with open(json_path, 'w', encoding='utf-8') as f:
+                    f.write(json.dumps(messages))
+                    f.close()
                 quit()
             if request_id == request_count:
                 app.panels["prompt"].clear()
@@ -94,7 +117,7 @@ def dashport(stdscr):
                 if status_code == 200:
                     messages.append({
                         "role": "assistant",
-                        "content": response.strip()[0:200]
+                        "content": response.strip()
                     })
                     if output_file:
                         with open(output_path, 'a', encoding='utf-8') as f:

@@ -160,7 +160,8 @@ cython_debug/
 #.idea/
 
 # Output docs
-*.txt
+*.md
+*.json
 
 # Ignore .ini files
 *.ini

@@ -39,7 +39,7 @@ else:
     verbose = args.verbose
     output_file = args.output
 
-filename_for_md = datetime.now().strftime("%Y-%m-%d at %I_%M_%p")
+filename_for_md = datetime.now().strftime("%Y-%m-%d at %I_%M_%S_%f_%p")
 output_path = "{}/{}.md".format(output_file, filename_for_md)
 
 

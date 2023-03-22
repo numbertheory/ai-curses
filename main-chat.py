@@ -4,7 +4,7 @@ from dashport.run import wrap
 from ai_curses import new_prompt
 from ai_curses import openai
 import argparse
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 from datetime import datetime
 
 parser = argparse.ArgumentParser(

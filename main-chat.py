@@ -63,8 +63,9 @@ def dashport(stdscr):
         with open(output_path, 'w', encoding='utf-8') as f:
             current_date = datetime.now().strftime("%B %d, %Y at %I:%m%p")
             f.write(f"# Chat Record {current_date}\n\n")
-            replace_with_backticks = super_command.replace("\"\"\"", "```")
-            f.write(f"System Prompt: {replace_with_backticks}\n\n")
+            remove_triple_quotes = super_command.replace(
+                "\"\"\"", "").replace("\n", "")
+            f.write(f"System Prompt:\n\n```\n{remove_triple_quotes}\n```\n\n")
             f.write("#chatgpt\n\n")
             f.close()
     while True:

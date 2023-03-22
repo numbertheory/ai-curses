@@ -114,7 +114,7 @@ def dashport(stdscr):
             app.print(content="AI> {}".format(response),
                       color="green_on_default",
                       x=0, y=app.rows - 2, panel="layout.0")
-            if verbose:
+            if verbose is True:
                 app.print(content="History> {}".format(messages),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")

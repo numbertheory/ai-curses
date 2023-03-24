@@ -49,9 +49,10 @@ if args.load_quicksave:
 else:
     quicksave_file = None
 filename_for_md = datetime.now().strftime("%Y-%m-%d at %H_%M_%S_%f_%p")
-output_path = "{}/{}.md".format(output_file, filename_for_md)
-json_path = "{}/{}.json".format(output_file, filename_for_md)
-print(f"Transcript: \"{output_path}\"\nJSON: \"{json_path}\"")
+if output_file:
+    output_path = "{}/{}.md".format(output_file, filename_for_md)
+    json_path = "{}/{}.json".format(output_file, filename_for_md)
+    print(f"Transcript: \"{output_path}\"\nJSON: \"{json_path}\"")
 
 
 def quit():
@@ -74,8 +75,8 @@ def load_quicksave(quicksave_file, super_command):
 
 def dashport(stdscr):
     app = Dashport(stdscr, color_default=8)
-    app.layout("single_panel", border=False, scroll=True, height=app.rows - 4)
-    app.addstr(">", x=0, y=app.rows - 3)
+    app.layout("single_panel", border=False, scroll=True, height=app.rows - 6)
+    # app.addstr(">", x=0, y=app.rows - 3)
     app.commands = []
     request_id = 0
     request_count = 1
@@ -93,19 +94,17 @@ def dashport(stdscr):
         while True:
             app.user_prompt_position = 1
             command, request_id = new_prompt.user_prompt(
-                app, x=2, y=app.rows - 3,
-                height=2, width=app.cols,
+                app, x=0, y=app.rows - 5,
+                height=5, width=app.cols,
                 request_id=request_id)
             if command == "quit" or command == "exit":
-                with open(json_path, 'w', encoding='utf-8') as f:
-                    f.write(json.dumps(messages))
-                    f.close()
+                if output_file:
+                    with open(json_path, 'w', encoding='utf-8') as f:
+                        f.write(json.dumps(messages))
+                        f.close()
                 quit()
             if request_id == request_count:
                 app.panels["prompt"].clear()
-                app.print(content="{}".format(command),
-                          color="grey_on_default",
-                          x=0, y=app.rows - 4, panel="layout.0")
                 app.screen.refresh()
                 messages.append({"role": "user", "content": command})
                 # Limit the messages to 25 so it can run indefinitely.
@@ -128,21 +127,22 @@ def dashport(stdscr):
                 else:
                     # drop the last message if the response was not good
                     messages.pop(len(messages) - 1)
-                app.print(content="{}".format(" " * len(command)),
-                          color="grey_on_default",
-                          x=0, y=app.rows - 5, panel="layout.0")
                 app.screen.refresh()
                 request_count += 1
+            app.panels["layout"][0].scroll(2)
             app.print(content="Human> {}".format(app.current_command),
-                      x=0, y=app.rows - 3, panel="layout.0")
+                      x=0, y=app.rows - 9,
+                      panel="layout.0")
+            app.panels["layout"][0].scroll(2)
             app.print(content="AI> {}".format(response),
                       color="green_on_default",
-                      x=0, y=app.rows - 2, panel="layout.0")
+                      x=0, y=app.rows - 9,
+                      panel="layout.0")
             if verbose is True:
                 app.print(content="History> {}".format(messages),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")
-            app.addstr(">", x=0, y=app.rows - 3)
+            # app.addstr(">", x=0, y=app.rows - 3)
         app.refresh()
 
 

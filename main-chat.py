@@ -48,7 +48,7 @@ if args.load_quicksave:
     quicksave_file = args.load_quicksave
 else:
     quicksave_file = None
-filename_for_md = datetime.now().strftime("%Y-%m-%d at %I_%M_%S_%f_%p")
+filename_for_md = datetime.now().strftime("%Y-%m-%d at %H_%M_%S_%f_%p")
 output_path = "{}/{}.md".format(output_file, filename_for_md)
 json_path = "{}/{}.json".format(output_file, filename_for_md)
 print(f"Transcript: \"{output_path}\"\nJSON: \"{json_path}\"")

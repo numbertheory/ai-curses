@@ -94,7 +94,7 @@ def dashport(stdscr):
         while True:
             app.user_prompt_position = 1
             command, request_id = new_prompt.user_prompt(
-                app, x=0, y=app.rows - 4,
+                app, x=0, y=app.rows - 5,
                 height=4, width=app.cols,
                 request_id=request_id)
             if command == "quit" or command == "exit":
@@ -103,6 +103,8 @@ def dashport(stdscr):
                         f.write(json.dumps(messages))
                         f.close()
                 quit()
+            app.addstr(f"Processing: {command}", color="grey_on_default",
+                       x=0, y=app.rows - 1)
             if request_id == request_count:
                 app.panels["prompt"].clear()
                 app.screen.refresh()
@@ -137,11 +139,12 @@ def dashport(stdscr):
                       color="green_on_default",
                       x=0, y=app.rows - 7,
                       panel="layout.0")
+            app.addstr(" " * (app.cols - 1), x=0, y=app.rows - 1)
             if verbose is True:
                 app.print(content="History> {}".format(messages),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")
-            # app.addstr(">", x=0, y=app.rows - 3)
+            
         app.refresh()
 
 

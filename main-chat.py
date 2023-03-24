@@ -144,7 +144,7 @@ def dashport(stdscr):
                 app.print(content="History> {}".format(messages),
                           color="red_on_default",
                           x=0, y=app.rows - 2, panel="layout.0")
-            
+
         app.refresh()
 
 

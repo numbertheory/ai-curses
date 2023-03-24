@@ -75,7 +75,7 @@ def load_quicksave(quicksave_file, super_command):
 
 def dashport(stdscr):
     app = Dashport(stdscr, color_default=8)
-    app.layout("single_panel", border=False, scroll=True, height=app.rows - 6)
+    app.layout("single_panel", scroll=True, height=app.rows - 5)
     # app.addstr(">", x=0, y=app.rows - 3)
     app.commands = []
     request_id = 0
@@ -94,8 +94,8 @@ def dashport(stdscr):
         while True:
             app.user_prompt_position = 1
             command, request_id = new_prompt.user_prompt(
-                app, x=0, y=app.rows - 5,
-                height=5, width=app.cols,
+                app, x=0, y=app.rows - 4,
+                height=4, width=app.cols,
                 request_id=request_id)
             if command == "quit" or command == "exit":
                 if output_file:
@@ -129,14 +129,13 @@ def dashport(stdscr):
                     messages.pop(len(messages) - 1)
                 app.screen.refresh()
                 request_count += 1
-            app.panels["layout"][0].scroll(2)
-            app.print(content="Human> {}".format(app.current_command),
+            app.panels["layout"][0].scroll(response.count('\n') + 4)
+            app.print(content="Human> {}\n".format(app.current_command),
                       x=0, y=app.rows - 9,
                       panel="layout.0")
-            app.panels["layout"][0].scroll(2)
-            app.print(content="AI> {}".format(response),
+            app.print(content="AI> {}\n".format(response),
                       color="green_on_default",
-                      x=0, y=app.rows - 9,
+                      x=0, y=app.rows - 7,
                       panel="layout.0")
             if verbose is True:
                 app.print(content="History> {}".format(messages),

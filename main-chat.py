@@ -63,6 +63,13 @@ def ai_response(messages, timeout):
     return openai.chatgpt(messages, timeout=timeout)
 
 
+def truncate_processing(command):
+    if len(command) < 25:
+        return command
+    else:
+        return f"{command[0:26]}..."
+
+
 def load_quicksave(quicksave_file, super_command):
     if not quicksave_file:
         return [{"role": "system", "content": super_command}]
@@ -103,7 +110,8 @@ def dashport(stdscr):
                         f.write(json.dumps(messages))
                         f.close()
                 quit()
-            app.addstr(f"Processing: {command}", color="grey_on_default",
+            app.addstr(f"Processing: {truncate_processing(command)}",
+                       color="grey_on_default",
                        x=0, y=app.rows - 1)
             if request_id == request_count:
                 app.panels["prompt"].clear()

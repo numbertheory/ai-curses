@@ -5,8 +5,10 @@ import curses
 
 def user_prompt(app, **kwargs):
     command_line_entered = []
-    cursor_x = kwargs.get("x", 0)
-    cursor_y = kwargs.get("y", 0)
+    cursor_x = kwargs.get("cursor_x", 1)
+    cursor_y = kwargs.get("cursor_y", 1)
+    prompt_x = kwargs.get("prompt_x", 0)
+    prompt_y = kwargs.get("prompt_y", 0)
     request_id = kwargs.get("request_id")
 
     def validate_text(x):
@@ -43,17 +45,23 @@ def user_prompt(app, **kwargs):
     if not app.panels.get("prompt"):
         win1, panel1 = app.panel(height=kwargs.get("height", 1),
                                  width=kwargs.get("width", 20),
-                                 y=cursor_y, x=cursor_x)
+                                 y=prompt_y,
+                                 x=prompt_x, border=False)
         app.panels["prompt"] = [win1, panel1]
         app.panel_coords.append([0, 0])
     app.screen.move(cursor_y, cursor_x)
     curses.panel.update_panels()
     app.screen.refresh()
     app.screen.move(cursor_y, cursor_x)
+
     tb = Textbox(app.panels["prompt"][0], insert_mode=True)
+    curses.setsyx(cursor_y, cursor_x)
     curses.curs_set(True)
     tb.edit(validate_text)
-    curses.curs_set(False)
-    app.panels["prompt"].clear()
+    try:
+        # only here until the new layout works 100%
+        app.panels["prompt"].clear()
+    except AttributeError:
+        app.panels["prompt"][0].clear()
     request_id += 1
     return app.current_command, request_id

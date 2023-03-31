@@ -46,7 +46,7 @@ def user_prompt(app, **kwargs):
         win1, panel1 = app.panel(height=kwargs.get("height", 1),
                                  width=kwargs.get("width", 20),
                                  y=prompt_y,
-                                 x=prompt_x, border=False)
+                                 x=prompt_x)
         app.panels["prompt"] = [win1, panel1]
         app.panel_coords.append([0, 0])
     app.screen.move(cursor_y, cursor_x)

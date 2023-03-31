@@ -5,8 +5,8 @@ import curses
 
 def user_prompt(app, **kwargs):
     command_line_entered = []
-    cursor_x = kwargs.get("cursor_x", 1)
-    cursor_y = kwargs.get("cursor_y", 1)
+    cursor_x = kwargs.get("cursor_x", 0)
+    cursor_y = kwargs.get("cursor_y", 0)
     prompt_x = kwargs.get("prompt_x", 0)
     prompt_y = kwargs.get("prompt_y", 0)
     request_id = kwargs.get("request_id")
@@ -22,7 +22,7 @@ def user_prompt(app, **kwargs):
             app.user_prompt_position += 1
         if x == 127 and len(command_line_entered) > 0:
             try:
-                command_line_entered.pop(app.user_prompt_position - 2)
+                command_line_entered.pop(len(command_line_entered) - 1)
             except IndexError:
                 pass
             app.user_prompt_position -= 1
@@ -53,11 +53,10 @@ def user_prompt(app, **kwargs):
     curses.panel.update_panels()
     app.screen.refresh()
     app.screen.move(cursor_y, cursor_x)
-
     tb = Textbox(app.panels["prompt"][0], insert_mode=True)
-    curses.setsyx(cursor_y, cursor_x)
-    curses.curs_set(True)
     tb.edit(validate_text)
+    curses.curs_set(True)
+    curses.setsyx(cursor_y, cursor_x + 1)
     try:
         # only here until the new layout works 100%
         app.panels["prompt"].clear()

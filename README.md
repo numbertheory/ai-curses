@@ -53,6 +53,7 @@ export CHATGPT_TOKEN="<YOUR-OPENAI-TOKEN>"
 To get a token, make an account on the openAI platform. Be sure you set a spending limit you are comfortable with, as you will be charged for any usage that your API key is used for:
 
 https://platform.openai.com/account/api-keys
+
 https://platform.openai.com/account/billing/limits
 
 

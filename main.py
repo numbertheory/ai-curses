@@ -52,9 +52,17 @@ if output_file:
 
 
 def quit(app, messages):
+    json_dump_text = json.dumps(messages, indent=4)
     if output_file:
         with open(json_path, 'w', encoding='utf-8') as f:
-            f.write(json.dumps(messages, indent=4))
+            f.write(json_dump_text)
+            f.close()
+    if quicksave_file:
+        with open(output_path, 'a', encoding='utf-8') as f:
+            f.write(
+                "\n\n## History\n\n"
+                "This history was loaded with the `-l` option.\n\n"
+                f"```json{json.dumps(messages, indent=4)}```\n\n")
             f.close()
     exit(0)
 
@@ -127,7 +135,7 @@ def initialize_output(super_command):
     if output_file:
         with open(output_path, 'a', encoding='utf-8') as f:
             f.write(
-                "```\nPrompt: {} \n```\n\n".format(
+                "## Prompt: {} \n\n## Conversation\n\n".format(
                     super_command.replace('"""', '')
                 )
             )

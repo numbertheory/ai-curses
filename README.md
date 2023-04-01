@@ -126,3 +126,7 @@ output = /home/user/somedir
 - **timeout**: The time, in seconds, the program will wait for a response from the API. Default: 95 seconds
 - **super**: The system prompt that is always the first message in the list of messages sent to the API. Use this to set up a more precise use case, that will be an assumption that the AI will use for all your other messages. Default: "You are a helpful assistant."
 - **output**: Set a directory on your local system to save the output. Default: Not set, no output file is generated.
+
+## Exiting the program
+
+To exit the program just type `exit` or `quit` into the chat and hit enter. That text will not be processed by the API, it will simply exit the program.

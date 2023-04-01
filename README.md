@@ -42,6 +42,20 @@ libreadline-dev
 libsqlite3-dev
 ```
 
+## Authentication
+
+In order to use this program, you need to have a value set for `CHATGPT_TOKEN` in your environment. It's best to set this in your shell as an environment variable.
+
+```
+export CHATGPT_TOKEN="<YOUR-OPENAI-TOKEN>"
+```
+
+To get a token, make an account on the openAI platform. Be sure you set a spending limit you are comfortable with, as you will be charged for any usage that your API key is used for:
+
+https://platform.openai.com/account/api-keys
+https://platform.openai.com/account/billing/limits
+
+
 ## Running
 
 To run, use `main.py`, that uses the chat API that OpenAI offers. The requests for the `/v1/chat/completions` endpoint make it easier to manage the conversation length and how much content is being pushed in each request.

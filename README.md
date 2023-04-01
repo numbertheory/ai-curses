@@ -130,3 +130,12 @@ output = /home/user/somedir
 ## Exiting the program
 
 To exit the program just type `exit` or `quit` into the chat and hit enter. That text will not be processed by the API, it will simply exit the program.
+
+
+## TODO (ideas for improvements)
+
+[ ] Custom colors for output
+[ ] Slash commands for system `/settings`, `/history` `/stats` etc.
+[ ] Make config a real object, to prevent the use of globals
+[ ] Templating system for Markdown output.
+[ ] Add system to specify names of files and output options.

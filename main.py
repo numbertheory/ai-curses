@@ -135,7 +135,7 @@ def initialize_output(super_command):
     if output_file:
         with open(output_path, 'a', encoding='utf-8') as f:
             f.write(
-                "## Prompt: {} \n\n## Conversation\n\n".format(
+                "## Prompt\n\n {} \n\n## Conversation\n\n".format(
                     super_command.replace('"""', '')
                 )
             )

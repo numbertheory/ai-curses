@@ -113,13 +113,6 @@ def add_to_chat_output(app, text, color):
             )
             app.panels["layout"][0].scroll(1)
             app.screen.refresh()
-            app.print(x=0, y=app.rows - 5,
-                      content=" ".ljust(app.cols),
-                      panel="layout.0",
-                      color=color)
-            app.panels["layout"][0].scroll(1)
-            app.screen.refresh()
-
 
 def initialize_messages(super_command="You are a helpful assistant."):
     return [{"role": "system", "content": f"{super_command}"}]

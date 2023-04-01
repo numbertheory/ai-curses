@@ -64,13 +64,13 @@ https://platform.openai.com/account/billing/limits
 To run, use `main.py`, that uses the chat API that OpenAI offers. The requests for the `/v1/chat/completions` endpoint make it easier to manage the conversation length and how much content is being pushed in each request.
 
 ```
-python main.py [OPTIONS]
+./main.py [OPTIONS]
 ```
 
 To see help, run:
 
 ```
-python main.py -h
+./main.py -h
 ```
 
 ## Running Options
@@ -78,13 +78,13 @@ python main.py -h
 If you have longer prompts and options you want to reuse, the best way to handle that is to write an INI file and load it when running the program (see Sample Config below). 
 
 ```
-python main.py -c my-prompt.ini
+./main.py -c my-prompt.ini
 ```
 
 You can also use the INI files in conjunction with the `-l` flag, to load a previous session:
 
 ```
-python main.py -c my-prompt.ini -l "2023-04-01 at 11_36_15_579128_AM.json"
+./main.py -c my-prompt.ini -l "2023-04-01 at 11_36_15_579128_AM.json"
 ```
 
 ## Output to file

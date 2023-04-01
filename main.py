@@ -10,7 +10,7 @@ import argparse
 from configparser import ConfigParser
 
 parser = argparse.ArgumentParser(
-                    prog='AI-Curses',
+                    prog='./main.py',
                     description='Interact with AI platforms in a terminal.')
 parser.add_argument('-s', '--super',
                     help="Set the system prompt for the chat intialization.",

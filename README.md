@@ -4,37 +4,103 @@ This is a general wrapper for AI chat services, like OpenAI's chat GPT. In the f
 
 ## Installation
 
-Use pyenv, or set a virtual environment up with python 3.11. Then install poetry, and install the rest of the requirements with:
+Use pyenv, or set a virtual environment up with python 3.11. The best way to make sure you're using the right version of python is to use [pyenv](https://github.com/pyenv/pyenv) to install the right version of python
+and then use that binary when making your virtual environment. The example below uses `mkvirtualenv` which comes with [virtualenvwrapper](https://pypi.org/project/virtualenvwrapper/): 
+
+```
+mkvirtualenv --python="${HOME}/.pyenv/shims/python3.11" ai-curses
+```
+
+Then install poetry, and install the rest of the requirements with:
 
 ```
 poetry install
 ```
 
-## Running
+This runs fine on macOS, but if you run into problems with Linux complaining about curses not being there, that
+means you have to install python with certain development libraries (this is the main reason to use pyenv, it makes installing Python versions a lot easier to manage).
 
-To run, use `main-chat.py`, that uses the far more functional chat API that OpenAI is using. The `main.py` file is an implementation using OpenAI's `text-davinci-003` model, which is fine for single chat completion tasks, but has stability issues once the conversation gets too long. The requests for the `/v1/chat/completions` endpoint make it easier to manage the conversation length and how much content is being pushed in each request.
+The test to make sure curses is installed is starting python3.11's IDE and trying "import curses" If it doesn't come back with an error, that means your system should be good to run this.
 
 ```
-python main-chat.py [OPTIONS]
+Python 3.11.2 (main, Mar 26 2023, 21:24:17) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import curses
+>>> 
+```
+
+These are the libraries I needed to install on ZorinOS, an Ubuntu-based distro, to get it to work. Consult your distro's documentation for more information on installing these packages.
+
+```
+libncurses5 
+libncurses5-dev 
+libncursesw5 
+libbz2-dev 
+liblzma-dev 
+tk-dev 
+libreadline-dev
+libsqlite3-dev
+```
+
+## Running
+
+To run, use `main.py`, that uses the chat API that OpenAI offers. The requests for the `/v1/chat/completions` endpoint make it easier to manage the conversation length and how much content is being pushed in each request.
+
+```
+python main.py [OPTIONS]
 ```
 
 To see help, run:
 
 ```
-python main-chat.py -h
+python main.py -h
 ```
+
+## Running Options
+
+If you have longer prompts and options you want to reuse, the best way to handle that is to write an INI file and load it when running the program (see Sample Config below). 
+
+```
+python main.py -c my-prompt.ini
+```
+
+You can also use the INI files in conjunction with the `-l` flag, to load a previous session:
+
+```
+python main.py -c my-prompt.ini -l "2023-04-01 at 11_36_15_579128_AM.json"
+```
+
+## Output to file
+
+One of the options `-o` allows you to output content to a directory (not an exact file name). When you do so, you get two files, a `.md` file and a `.json` file. Example:
+
+```
+2023-04-01 at 11_36_15_579128_AM.md
+2023-04-01 at 11_36_15_579128_AM.json
+```
+
+The markdown format is just for everyday use by humans. The JSON file can be loaded back into the program when running (see Running Options above), so you can continue the conversation you were having, with all the previous history.
+
+At this time, there are no formatting, templating, or naming options for output, but that is something that could be possible in the future.
+
 
 ## Sample Config
 
-The `-c` or `--config` flag points to an INI config file so that you can set options without having large amounts of flags or text in your command.  This flag is only available for `main-chat.py` at the moment.
+The `-c` or `--config` flag points to an INI config file so that you can set options without having large amounts of flags or text in your command.
 
 This is a sample INI file. The `output` option should be a full absolute path to a directory, the actual filename will be generated based on the system time and date.
 
 ```
 [options]
 timeout = 60
-super = "You are an AI chat having a conversation with a human."
-verbose = false
+super = """
+    You are helping me write a story set in a fantasy world. 
+    Limit the responses to two to three paragraphs, and include some dialogue when appropriate. 
+    The story is set in a world where kings and kingdoms run everything and magic is real,
+    controlled by powerful wizards.
+    Do not attempt to end the story, each response should lead to a new plotpoint 
+    or adventure.
+    """
 output = /home/user/somedir
 ```
 
@@ -42,5 +108,4 @@ output = /home/user/somedir
 
 **timeout**: The time, in seconds, the program will wait for a response from the API. Default: 95 seconds.
 **super**: The system prompt that is always the first message in the list of messages sent to the API. Use this to set up a more precise use case, that will be an assumption that the AI will use for all your other messages. Default: "You are a helpful assistant."
-**verbose**: Set this to see the exact Python list that is getting sent with each message. Useful for debugging, does not show up in output text file (see option below). Default: false
 **output**: Set a directory on your local system to save the output. Default: Not set, no output file is generated.

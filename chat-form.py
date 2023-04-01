@@ -81,26 +81,34 @@ def set_prompt_title(app, processing=None):
                   x=0, y=0, color="black_on_grey", panel="prompt_title.0")
 
 
-def find_scroll_amount(columns, text):
-    if len(text) <= columns:
-        return 2
-    else:
-        return math.ceil(len(text) / columns) + 1
-
-
 def process_request(messages, timeout):
     return openai.chatgpt(messages, timeout=timeout)
 
 
-def add_to_chat_output(app, text):
-    app.print(
-        x=0,
-        y=app.rows - 5,
-        content=text,
-        panel="layout.0"
-    )
-    scroll_amount = find_scroll_amount(app.cols, text)
-    app.panels["layout"][0].scroll(scroll_amount)
+def add_to_chat_output(app, text, color):
+    new_line_split = text.split('\n')
+    paragraphs = []
+    for line in new_line_split:
+        if len(line) < app.cols:
+            paragraphs.append(line)
+        else:
+            chunks, chunk_size = len(line), app.cols
+            y = [line[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+            for i in range(0, len(y)):
+                paragraphs.append(y)
+    for para in paragraphs:
+        chunks, chunk_size = len(para), app.cols
+        scroller = [para[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
+        for line in scroller:
+            app.print(
+                x=0,
+                y=app.rows - 5,
+                content="{}".format(f"{para:<{app.cols}}"),
+                panel="layout.0",
+                color=color
+            )
+            app.panels["layout"][0].scroll(1)
+            app.screen.refresh()
 
 
 def initialize_messages():
@@ -135,8 +143,8 @@ def dashport(stdscr):
                 set_prompt_title(app, processing=True)
                 response, status_code = process_request(messages, 60)
                 messages = message_handler(messages, response, status_code)
-                add_to_chat_output(app, f"Human> {command}")
-                add_to_chat_output(app, f"AI> {response}")
+                add_to_chat_output(app, f"Human> {command}", "aqua_on_navy")
+                add_to_chat_output(app, f"AI> {response}", "black_on_silver")
                 request_count += 1
     app.refresh()
 

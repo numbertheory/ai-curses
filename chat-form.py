@@ -116,8 +116,7 @@ def add_to_chat_output(app, text, color):
             app.print(x=0, y=app.rows - 5,
                       content=" ".ljust(app.cols),
                       panel="layout.0",
-                      color=color
-            )
+                      color=color)
             app.panels["layout"][0].scroll(1)
             app.screen.refresh()
 

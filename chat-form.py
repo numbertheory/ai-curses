@@ -3,7 +3,7 @@
 from dashport.dash import Dashport
 from dashport.run import wrap
 from ai_curses import new_prompt
-import math
+import json
 from datetime import datetime
 from ai_curses import openai
 import argparse
@@ -56,7 +56,11 @@ if output_file:
     print(f"Transcript: \"{output_path}\"\nJSON: \"{json_path}\"")
 
 
-def quit(app):
+def quit(app, messages):
+    if output_file:
+        with open(json_path, 'w', encoding='utf-8') as f:
+            f.write(json.dumps(messages, indent=4))
+            f.close()
     exit(0)
 
 
@@ -95,7 +99,7 @@ def add_to_chat_output(app, text, color):
             chunks, chunk_size = len(line), app.cols
             y = [line[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
             for i in range(0, len(y)):
-                paragraphs.append(y)
+                paragraphs.append(y[i])
     for para in paragraphs:
         chunks, chunk_size = len(para), app.cols
         scroller = [para[i:i+chunk_size] for i in range(0, chunks, chunk_size)]
@@ -103,23 +107,36 @@ def add_to_chat_output(app, text, color):
             app.print(
                 x=0,
                 y=app.rows - 5,
-                content="{}".format(f"{para:<{app.cols}}"),
+                content="{}".format(f"{str(line):<{app.cols}}"),
                 panel="layout.0",
                 color=color
             )
             app.panels["layout"][0].scroll(1)
             app.screen.refresh()
+            app.print(x=0, y=app.rows - 5,
+                      content=" ".ljust(app.cols),
+                      panel="layout.0",
+                      color=color
+            )
+            app.panels["layout"][0].scroll(1)
+            app.screen.refresh()
 
 
-def initialize_messages():
-    return [{"role": "system", "content": "You are a helpful assistant."}]
+def initialize_messages(super_command="You are a helpful assistant."):
+    return [{"role": "system", "content": f"{super_command}"}]
 
 
-def message_handler(messages, response, status_code):
+def message_handler(messages, response, status_code, output_file):
     while len(messages) > 25:
         messages.pop(1)
     if status_code == 200:
+        command = messages[-1].get('content')
         messages.append({"role": "assistant", "content": response.strip()})
+        if output_file:
+            with open(output_path, 'a', encoding='utf-8') as f:
+                f.write("Human> {} \n\n".format(command))
+                f.write("AI> {} \n\n".format(response))
+                f.close()
     return messages
 
 
@@ -129,20 +146,22 @@ def dashport(stdscr):
     app.user_prompt_position = 1
     request_id = 0
     request_count = 1
-    messages = initialize_messages()
+    messages = initialize_messages(super_command)
     while True:
         while True:
             set_prompt_title(app)
             command, request_id = command_prompt(app, request_id)
             if command == "quit" or command == "exit":
-                quit(app)
+                quit(app, messages)
             if request_id == request_count:
                 app.panels["prompt"].clear()
                 app.screen.refresh()
                 messages.append({"role": "user", "content": command})
                 set_prompt_title(app, processing=True)
-                response, status_code = process_request(messages, 60)
-                messages = message_handler(messages, response, status_code)
+                response, status_code = process_request(messages, timeout)
+                messages = message_handler(
+                    messages, response, status_code, output_file
+                )
                 add_to_chat_output(app, f"Human> {command}", "aqua_on_navy")
                 add_to_chat_output(app, f"AI> {response}", "black_on_silver")
                 request_count += 1

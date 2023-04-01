@@ -53,9 +53,9 @@ def user_prompt(app, **kwargs):
     curses.panel.update_panels()
     app.screen.refresh()
     app.screen.move(cursor_y, cursor_x)
+    curses.curs_set(True)
     tb = Textbox(app.panels["prompt"][0], insert_mode=True)
     tb.edit(validate_text)
-    curses.curs_set(True)
     curses.setsyx(cursor_y, cursor_x + 1)
     try:
         # only here until the new layout works 100%

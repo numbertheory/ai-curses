@@ -2,6 +2,8 @@
 
 This is a general wrapper for AI chat services, like OpenAI's chat GPT. In the future this may cover others.
 
+!["Screenshot of ai-curses being used in a linux terminal"](screenshot.png)
+
 ## Installation
 
 Use pyenv, or set a virtual environment up with python 3.11. The best way to make sure you're using the right version of python is to use [pyenv](https://github.com/pyenv/pyenv) to install the right version of python

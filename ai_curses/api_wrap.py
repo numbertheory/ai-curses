@@ -24,7 +24,11 @@ def post(url, **kwargs):
             url, headers=headers, json=body,
             timeout=(3, timeout_seconds))
     except requests.exceptions.ReadTimeout:
-        return FallBack(f"Unfortunately, the API timed out after {timeout_seconds} seconds.")
+        return FallBack(
+            f"The API timed out after {timeout_seconds} seconds."
+        )
     except requests.exceptions.ConnectionError:
-        return FallBack(f"Unfortunately, a connection to the API could not be established. Try again.")
+        return FallBack(
+            "A connection to the API could not be established. Try again."
+        )
     return main_request

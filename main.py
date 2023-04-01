@@ -110,7 +110,10 @@ def add_to_chat_output(app, text, color):
             app.screen.refresh()
 
 
-def initialize_messages(history=None, super_command="You are a helpful assistant."):
+def initialize_messages(
+    history=None,
+    super_command="You are a helpful assistant."
+):
     if not history:
         return [{"role": "system", "content": f"{super_command}"}]
     else:
@@ -120,6 +123,15 @@ def initialize_messages(history=None, super_command="You are a helpful assistant
         return messages
 
 
+def initialize_output(super_command):
+    if output_file:
+        with open(output_path, 'a', encoding='utf-8') as f:
+            f.write(
+                "```\nPrompt: {} \n```\n\n".format(
+                    super_command.replace('"""', '')
+                )
+            )
+            f.close()
 
 
 def message_handler(messages, response, status_code, output_file):
@@ -143,9 +155,10 @@ def dashport(stdscr):
     request_id = 0
     request_count = 1
     messages = initialize_messages(
-        history=quicksave_file, 
+        history=quicksave_file,
         super_command=super_command
     )
+    initialize_output(super_command)
     while True:
         while True:
             set_prompt_title(app)

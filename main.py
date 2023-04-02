@@ -4,61 +4,20 @@ from dashport.dash import Dashport
 from dashport.run import wrap
 from ai_curses import new_prompt
 import json
-from datetime import datetime
 from ai_curses import openai
-import argparse
-from configparser import ConfigParser
+from ai_curses import config
 
-parser = argparse.ArgumentParser(
-                    prog='./main.py',
-                    description='Interact with AI platforms in a terminal.')
-parser.add_argument('-s', '--super',
-                    help="Set the system prompt for the chat intialization.",
-                    default='You are a helpful assistant.')
-parser.add_argument('-t', '--timeout',
-                    help="Set the API timeout, default is 95 seconds.",
-                    default='95')
-parser.add_argument('-o', '--output',
-                    help="Set path for output text file and JSON quicksave"
-                         "file to save chat and place on exit.")
-parser.add_argument('-c', '--config',
-                    help="Set a path for a config file.",
-                    default=None)
-parser.add_argument('-l', '--load-quicksave',
-                    help="Load a quicksave JSON file.",
-                    default=None)
-args = parser.parse_args()
-
-if args.config:
-    config = ConfigParser()
-    config.read(args.config)
-    timeout = config.get('options', 'timeout')
-    super_command = config.get('options', 'super')
-    output_file = config.get('options', 'output')
-else:
-    timeout = int(args.timeout)
-    super_command = args.super
-    output_file = args.output
-
-if args.load_quicksave:
-    quicksave_file = args.load_quicksave
-else:
-    quicksave_file = None
-filename_for_md = datetime.now().strftime("%Y-%m-%d at %H_%M_%S_%f_%p")
-if output_file:
-    output_path = "{}/{}.md".format(output_file, filename_for_md)
-    json_path = "{}/{}.json".format(output_file, filename_for_md)
-    print(f"Transcript: \"{output_path}\"\nJSON: \"{json_path}\"")
+args = config.get_config()
 
 
 def quit(app, messages):
     json_dump_text = json.dumps(messages, indent=4)
-    if output_file:
-        with open(json_path, 'w', encoding='utf-8') as f:
+    if args.output_dir:
+        with open(args.output_json, 'w', encoding='utf-8') as f:
             f.write(json_dump_text)
             f.close()
-    if quicksave_file:
-        with open(output_path, 'a', encoding='utf-8') as f:
+    if args.load_history_json and args.output_md:
+        with open(args.output_md, 'a', encoding='utf-8') as f:
             f.write(
                 "\n\n## History\n\n"
                 "This history was loaded with the `-l` option.\n\n"
@@ -132,8 +91,8 @@ def initialize_messages(
 
 
 def initialize_output(super_command):
-    if output_file:
-        with open(output_path, 'a', encoding='utf-8') as f:
+    if args.output_dir:
+        with open(args.output_md, 'a', encoding='utf-8') as f:
             f.write(
                 "## Prompt\n\n {} \n\n## Conversation\n\n".format(
                     super_command.replace('"""', '')
@@ -149,7 +108,7 @@ def message_handler(messages, response, status_code, output_file):
         command = messages[-1].get('content')
         messages.append({"role": "assistant", "content": response.strip()})
         if output_file:
-            with open(output_path, 'a', encoding='utf-8') as f:
+            with open(output_file, 'a', encoding='utf-8') as f:
                 f.write("Human> {} \n\n".format(command))
                 f.write("AI> {} \n\n".format(response))
                 f.close()
@@ -163,10 +122,10 @@ def dashport(stdscr):
     request_id = 0
     request_count = 1
     messages = initialize_messages(
-        history=quicksave_file,
-        super_command=super_command
+        history=args.load_history_json,
+        super_command=args.super
     )
-    initialize_output(super_command)
+    initialize_output(args.super)
     while True:
         while True:
             set_prompt_title(app)
@@ -178,9 +137,9 @@ def dashport(stdscr):
                 app.screen.refresh()
                 messages.append({"role": "user", "content": command})
                 set_prompt_title(app, processing=True)
-                response, status_code = process_request(messages, timeout)
+                response, status_code = process_request(messages, args.timeout)
                 messages = message_handler(
-                    messages, response, status_code, output_file
+                    messages, response, status_code, args.output_md
                 )
                 add_to_chat_output(app, f"Human> {command}", "aqua_on_navy")
                 add_to_chat_output(app, f"AI> {response}", "black_on_silver")

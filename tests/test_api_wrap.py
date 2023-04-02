@@ -9,7 +9,12 @@ def test_api_wrap_post(mocked):
         status_code=201,
         json=lambda: [{"response": "tacos"}],
         text='[{"response": "tacos"}]')
-    c = api_wrap.post("http://example.com", timeout=0.0005)
+    c = api_wrap.post(
+        "http://example.com",
+        timeout=0.0005,
+        headers={'SomeHeading': 'SomeValue'},
+        body={"some_content": "reply"}
+    )
     assert isinstance(c.json(), (list))
     assert c.json() == [{"response": "tacos"}]
     assert c.status_code == 201

@@ -23,6 +23,8 @@ def dashport(stdscr):
             command, request_id = command_prompt.user(app, request_id)
             if command == "quit" or command == "exit":
                 hm.quit_program(messages, args)
+            elif command == ":forget":
+                messages.pop(1)
             elif command.startswith(":"):
                 mc.handler(app, args, command, messages)
                 request_count += 1

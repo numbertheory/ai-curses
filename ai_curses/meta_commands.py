@@ -16,6 +16,8 @@ def main_help(app, args, command, messages):
 :history - Show current history stats.
 :settings - Show the current settings of this session.
 :prompt - Show the current system prompt (super command).
+:forget - Remove the oldest message from the message list,
+          if your chat has gotten too big.
 :image [PROMPT] - Create an image with a prompt. You must provide a prompt,
 and there must be an output directory set in the config or with the -o flag.
 {blank_line()}

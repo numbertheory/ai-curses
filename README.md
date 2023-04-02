@@ -131,12 +131,23 @@ output = /home/user/somedir
 
 To exit the program just type `exit` or `quit` into the chat and hit enter. That text will not be processed by the API, it will simply exit the program.
 
+## Meta-commands
+
+Meta-commands are commands that show metainformation about the conversation, and do not interact with the AI api or appear in the markdown or JSON output. To differentiate them from text being sent to the AI, all commands must begin with a `:` (colon) character. This colon will key the program to not send the text to
+the AI, or add it to the output files.
+
+```
+:help - Show help.
+:history - Show current history stats.
+:settings - Show the current settings of this session.
+```
+
+If a command is unknown, the program shows an error message, and you can continue talking with the AI.
+
 
 ## TODO (ideas for improvements)
 
 [ ] Custom colors for output
-
-[ ] Slash commands for system `/settings`, `/history` `/stats` etc.
 
 [ ] Templating system for Markdown output.
 

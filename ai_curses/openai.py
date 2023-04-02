@@ -47,6 +47,23 @@ def get_chat_reply(messages, **kwargs):
                          timeout=timeout)
 
 
+def get_image(prompt, **kwargs):
+    timeout = int(kwargs.get("timeout", 95))
+    headers = {
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {os.getenv('CHATGPT_TOKEN')}"
+    }
+    body = {
+        "prompt": prompt,
+        "n": 1,
+        "size": "1024x1024"
+    }
+    return api_wrap.post("https://api.openai.com/v1/images/generations",
+                         headers=headers,
+                         body=body,
+                         timeout=timeout)
+
+
 def chatgpt(messages, **kwargs):
     timeout = int(kwargs.get("timeout", 95))
     openai_req = get_chat_reply(messages, timeout=timeout)

@@ -140,6 +140,7 @@ the AI, or add it to the output files.
 :help - Show help.
 :history - Show current history stats.
 :settings - Show the current settings of this session.
+:prompt - Show the current system prompt (super command).
 ```
 
 If a command is unknown, the program shows an error message, and you can continue talking with the AI.

@@ -11,7 +11,7 @@ def main_help(app, args, command, messages):
 :help - Show this help.
 :history - Show current history stats.
 :settings - Show the current settings of this session.
-:prompt - Show the current system prompt (super command)
+:prompt - Show the current system prompt (super command).
 {blank_line()}
 Type 'quit' or 'exit' to exit the program.
 {blank_line()}

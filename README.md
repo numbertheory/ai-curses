@@ -141,6 +141,7 @@ the AI, or add it to the output files.
 :history - Show current history stats.
 :settings - Show the current settings of this session.
 :prompt - Show the current system prompt (super command).
+:image [PROMPT] - Create an image with a prompt. You must provide a prompt, and there must be an output directory set in the config or with the -o flag.
 ```
 
 If a command is unknown, the program shows an error message, and you can continue talking with the AI.

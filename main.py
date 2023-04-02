@@ -20,7 +20,7 @@ def dashport(stdscr):
             command_prompt.title(app)
             command, request_id = command_prompt.user(app, request_id)
             if command == "quit" or command == "exit":
-                hm.quit(app, messages, args)
+                hm.quit_program(messages, args)
             if request_id == request_count:
                 app.panels["prompt"].clear()
                 app.screen.refresh()

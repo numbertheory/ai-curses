@@ -11,7 +11,7 @@ def initialize(args):
     return messages
 
 
-def quit(app, messages, args):
+def quit_program(messages, args):
     json_dump_text = json.dumps(messages, indent=4)
     if args.output_dir:
         with open(args.output_json, 'w', encoding='utf-8') as f:

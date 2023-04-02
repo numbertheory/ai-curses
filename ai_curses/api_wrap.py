@@ -4,8 +4,8 @@ import requests
 
 class FallBack():
     """ Fallback object for requests to surface API timeouts safely. """
-    def __init__(self, text):
-        self.status_code = 408
+    def __init__(self, text, status_code):
+        self.status_code = status_code
         self.text = text
 
     def json(self):
@@ -25,10 +25,10 @@ def post(url, **kwargs):
             timeout=(3, timeout_seconds))
     except requests.exceptions.ReadTimeout:
         return FallBack(
-            f"The API timed out after {timeout_seconds} seconds."
+            f"The API timed out after {timeout_seconds} seconds.", 408
         )
     except requests.exceptions.ConnectionError:
         return FallBack(
-            "A connection to the API could not be established. Try again."
+            "A connection to the API could not be established. Try again.", 504
         )
     return main_request

@@ -2,6 +2,7 @@ from ai_curses import handle_messages as hm
 from ai_curses import openai
 import requests
 import shutil
+import ai_curses.command_prompt as command_prompt
 
 
 def blank_line():
@@ -46,6 +47,9 @@ your prompt: :image {image_prompt}
 output directory: {args.output_dir}
 """
     else:
+        app.panels["prompt"].clear()
+        app.screen.refresh()
+        command_prompt.title(app, processing=True)
         response = openai.get_image(image_prompt, timeout=args.timeout)
         if response.status_code == 200:
             image_url = response.json().get('data')[0]['url']

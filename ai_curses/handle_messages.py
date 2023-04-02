@@ -11,6 +11,15 @@ def initialize(args):
     return messages
 
 
+def show_meta_help(app):
+    add_to_chat_output(
+        app,
+        "Type \":help\" and then enter or Return"
+        " to show additional commands",
+        "green_on_black"
+    )
+
+
 def quit_program(messages, args):
     json_dump_text = json.dumps(messages, indent=4)
     if args.output_dir:

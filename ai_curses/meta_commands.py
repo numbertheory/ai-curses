@@ -5,14 +5,25 @@ def blank_line():
     return " \n"
 
 
-def help(app, args, command, messages):
+def main_help(app, args, command, messages):
     return f"""
 {blank_line()}
 :help - Show this help.
 :history - Show current history stats.
 :settings - Show the current settings of this session.
+:prompt - Show the current system prompt (super command)
 {blank_line()}
 Type 'quit' or 'exit' to exit the program.
+{blank_line()}
+"""
+
+
+def prompt(app, args, command, messages):
+    prompt = args.super.replace('"""', '').replace('\n', '')
+    return f"""
+{blank_line()}
+Prompt:
+{prompt}
 {blank_line()}
 """
 
@@ -20,13 +31,16 @@ Type 'quit' or 'exit' to exit the program.
 def settings(app, args, command, messages):
     if not args.output_md:
         output_md = "none output file set"
+    else:
+        output_md = f"\"{args.output_md}\""
     if not args.output_json:
         output_json = "no output json file set"
+    else:
+        output_json = f"\"{args.output_json}\""
     return f"""
 {blank_line()}
 Settings:
 {blank_line()}
-Prompt - "{args.super}"
 Output Markdown File - {output_md}
 Output JSON file - {output_json}
 Timeout - {args.timeout} seconds
@@ -53,9 +67,10 @@ History:
 
 def help_menu():
     return {
-        "help": help,
+        "help": main_help,
         "history": history,
-        "settings": settings
+        "settings": settings,
+        "prompt": prompt
     }
 
 

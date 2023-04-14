@@ -111,11 +111,11 @@ This is a sample INI file. The `output` option should be a full absolute path to
 [options]
 timeout = 60
 super = """
-    You are helping me write a story set in a fantasy world. 
-    Limit the responses to two to three paragraphs, and include some dialogue when appropriate. 
-    The story is set in a world where kings and kingdoms run everything and magic is real,
-    controlled by powerful wizards.
-    Do not attempt to end the story, each response should lead to a new plotpoint 
+    You are helping me write a story set in a fantasy world. \n
+    Limit the responses to two to three paragraphs, and include some dialogue when appropriate. \n
+    The story is set in a world where kings and kingdoms run everything and magic is real, \n
+    controlled by powerful wizards. \n
+    Do not attempt to end the story, each response should lead to a new plotpoint \n
     or adventure.
     """
 output = /home/user/somedir

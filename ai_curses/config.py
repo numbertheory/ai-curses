@@ -45,7 +45,7 @@ def get_config():
         config = ConfigParser()
         config.read(args.config)
         timeout = config.get('options', 'timeout')
-        super_command = config.get('options', 'super')
+        super_command = config.get('options', 'super').replace("\\n", "\n")
         output_file = config.get('options', 'output')
     else:
         timeout = int(args.timeout)

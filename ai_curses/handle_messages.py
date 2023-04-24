@@ -36,8 +36,8 @@ def quit_program(messages, args):
     exit(0)
 
 
-def process_request(messages, timeout):
-    return openai.chatgpt(messages, timeout=timeout)
+def process_request(messages, timeout, model):
+    return openai.chatgpt(messages, timeout=timeout, model=model)
 
 
 def add_to_chat_output(app, text, color):
@@ -106,7 +106,7 @@ def message_handler(messages, response, status_code, output_file):
 
 def process_helper(messages, app, command, args):
     response, status_code = process_request(
-        messages, args.timeout
+        messages, args.timeout, args.model
     )
     messages = message_handler(
         messages, response, status_code, args.output_md

@@ -11,6 +11,7 @@ class AiCursesConfig():
         self.output_md = parsed_config.get('output_md')
         self.output_json = parsed_config.get('output_json')
         self.load_history_json = parsed_config.get('load_history_json')
+        self.model = parsed_config.get('model')
 
 
 def get_config():
@@ -39,6 +40,10 @@ def get_config():
         '-l', '--load-quicksave',
         help="Load a quicksave JSON file.",
         default=None)
+    parser.add_argument(
+        '-m', '--model',
+        help="Define the model to use, defaults to gpt-4.",
+        default="gpt-4")
     args = parser.parse_args()
 
     if args.config:
@@ -47,10 +52,12 @@ def get_config():
         timeout = config.get('options', 'timeout')
         super_command = config.get('options', 'super').replace("\\n", "\n")
         output_file = config.get('options', 'output')
+        model = config.get('options', 'model')
     else:
         timeout = int(args.timeout)
         super_command = args.super
         output_file = args.output
+        model = args.model
 
     if args.load_quicksave:
         quicksave_file = args.load_quicksave
@@ -71,7 +78,8 @@ def get_config():
         "output_dir": output_file,
         "output_md": output_path,
         "output_json": json_path,
-        "load_history_json": quicksave_file
+        "load_history_json": quicksave_file,
+        "model": model
     }
 
     return AiCursesConfig(parsed_config)

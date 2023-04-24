@@ -33,12 +33,13 @@ def chat(query):
 
 def get_chat_reply(messages, **kwargs):
     timeout = int(kwargs.get("timeout", 95))
+    model = kwargs.get("model", "gpt-4")
     headers = {
         "Content-type": "application/json",
         "Authorization": f"Bearer {os.getenv('CHATGPT_TOKEN')}"
     }
     body = {
-        "model": "gpt-3.5-turbo",
+        "model": model,
         "messages": messages
     }
     return api_wrap.post("https://api.openai.com/v1/chat/completions",
@@ -66,7 +67,8 @@ def get_image(prompt, **kwargs):
 
 def chatgpt(messages, **kwargs):
     timeout = int(kwargs.get("timeout", 95))
-    openai_req = get_chat_reply(messages, timeout=timeout)
+    model = kwargs.get("model", "gpt-4")
+    openai_req = get_chat_reply(messages, timeout=timeout, model=model)
     error_msg = f"Sorry, your request did not go through: {openai_req.text} "
     if openai_req.status_code == 200 or openai_req.status_code == 408:
         return_val = "\n".join([x['message']['content']

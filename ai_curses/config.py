@@ -1,5 +1,5 @@
 import argparse
-from configparser import ConfigParser
+from configparser import ConfigParser, NoOptionError
 from datetime import datetime
 
 
@@ -12,6 +12,29 @@ class AiCursesConfig():
         self.output_json = parsed_config.get('output_json')
         self.load_history_json = parsed_config.get('load_history_json')
         self.model = parsed_config.get('model')
+
+
+def safe_config_get(config_file):
+    """All configurations in the file have defaults."""
+    config = ConfigParser()
+    config.read(config_file)
+    try:
+        timeout = config.get('options', 'timeout')
+    except NoOptionError:
+        timeout = '95'
+    try:
+        super_command = config.get('options', 'super').replace("\\n", "\n")
+    except NoOptionError:
+        super_command = 'You are a helpful assistant.'
+    try:
+        output_file = config.get('options', 'output')
+    except NoOptionError:
+        output_file = None
+    try:
+        model = config.get('options', 'model')
+    except NoOptionError:
+        model = 'gpt-4'
+    return timeout, super_command, output_file, model
 
 
 def get_config():
@@ -47,12 +70,8 @@ def get_config():
     args = parser.parse_args()
 
     if args.config:
-        config = ConfigParser()
-        config.read(args.config)
-        timeout = config.get('options', 'timeout')
-        super_command = config.get('options', 'super').replace("\\n", "\n")
-        output_file = config.get('options', 'output')
-        model = config.get('options', 'model')
+        timeout, super_command, output_file, model = \
+            safe_config_get(args.config)
     else:
         timeout = int(args.timeout)
         super_command = args.super

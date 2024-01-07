@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 from curses.textpad import Textbox
 import curses
+import platform
 
 
 def user_prompt(app, **kwargs):
@@ -11,6 +12,13 @@ def user_prompt(app, **kwargs):
     prompt_y = kwargs.get("prompt_y", 0)
     request_id = kwargs.get("request_id")
 
+    def backspace_key():
+        if platform.system().lower() == "linux":
+            return 263
+        else:
+            return 127
+
+
     def validate_text(x):
         invalid_chars = [127, 260, 261, 10]
         if x == 260 and app.user_prompt_position != 0:
@@ -20,7 +28,7 @@ def user_prompt(app, **kwargs):
         if x not in invalid_chars and curses.ascii.isprint(x):
             command_line_entered.insert(app.user_prompt_position, chr(x))
             app.user_prompt_position += 1
-        if x == 127 and len(command_line_entered) > 0:
+        if x == backspace_key() and len(command_line_entered) > 0:
             try:
                 command_line_entered.pop(len(command_line_entered) - 1)
             except IndexError:

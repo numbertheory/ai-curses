@@ -12,7 +12,7 @@ def get_response(query):
         "Authorization": f"Bearer {os.getenv('CHATGPT_TOKEN')}"
     }
     body = {
-        "model": "text-davinci-003",
+        "model": "gpt-3.5-turbo-instruct",
         "prompt": f"{intro}\n{query}",
         "temperature": 0.68,
         "max_tokens": 2048
